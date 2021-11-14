@@ -1,0 +1,27 @@
+version: "3.4"
+
+services:
+  nginx:
+    build:
+      context: ./nginx/
+      dockerfile: Nginx.Dockerfile
+    depends_on:
+      - api
+      - central
+    ports:
+      - "5100:5100"
+    restart: always
+
+  api:
+    build: .
+    environment:
+      NODE_ENV: production
+    restart: always
+
+  central:
+    build:
+      context: ./centralServer/
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+    restart: always
