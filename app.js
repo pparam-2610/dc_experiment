@@ -2,6 +2,23 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 
+const { networkInterfaces } = require("os");
+
+const nets = networkInterfaces();
+const results = Object.create(null); // Or just '{}', an empty object
+
+for (const name of Object.keys(nets)) {
+  for (const net of nets[name]) {
+    // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+    if (net.family === "IPv4" && !net.internal) {
+      if (!results[name]) {
+        results[name] = [];
+      }
+      results[name].push(net.address);
+    }
+  }
+}
+
 // File execution exports
 // const { generateFile } = require("./generateFile");
 // const { addJobToQueue } = require("./jobQueue");
@@ -81,10 +98,29 @@ app.post("/sendTime", (req, res) => {
 app.post("/registerTurf", async (req, res) => {
   //   timestamp = req.body.timestamp;
   //   res.send("ok");
-  let turf = await Turf.create({ language, filePath });
+  console.log("Body: ", req.body);
+
+  let turf = await Turf.create({
+    name: req.body.name,
+    address: req.body.address,
+    size: req.body.size,
+  });
   console.log("turf: ", turf);
   res.json({
     data: turf,
+    ip: results["eth0"][0],
+  });
+});
+
+app.get("/getTurf", async (req, res) => {
+  //   timestamp = req.body.timestamp;
+  //   res.send("ok");
+  console.log("Body: ", req.body);
+
+  let turfs = await Turf.find();
+  console.log("turf: ", turfs);
+  res.json({
+    data: turfs,
     ip: results["eth0"][0],
   });
 });
@@ -104,5 +140,5 @@ app.listen(process.env.LISTEN_PORT, async () => {
     )
     .then(() => console.log("Connected to the db... "))
     .catch((err) => console.log(err));
-  console.log("Starting server at port:", process.env.LISTEN_PORT);
+  console.log("Starting at port:", process.env.LISTEN_PORT);
 });
