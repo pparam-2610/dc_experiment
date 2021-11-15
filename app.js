@@ -48,6 +48,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 let timestamp = new Date().getTime();
+let delta;
 // setInterval(async () => {
 //   let startTime = new Date().getTime();
 //   let data;
@@ -70,17 +71,17 @@ app.get("/", (req, res) => {
 
 app.get("/getTimestamp", (req, res) => {
   res.json({
-    data: "The app is running, lesssssgo!!!!!!!!!!!",
+    // data: "The app is running, lesssssgo!!!!!!!!!!!",
     timestamp: new Date().getTime(),
   });
   console.log("GET / request served");
 });
 
 app.get("/getBerleyTimestamp", (req, res) => {
-  console.log("In server 3: ", timestamp);
+  console.log("In server : ", 1634949412335);
   res.json({
     timestamp: timestamp,
-    // ip: results["eth0"][0],
+    ip: results["eth0"][0],
   });
 });
 

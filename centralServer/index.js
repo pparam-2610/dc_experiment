@@ -55,25 +55,27 @@ app.get("/central/syncTime", async (req, res) => {
     );
     let RTT3 = new Date().getTime() - startTime3;
 
-    let timestamp1 = data1.data.timestamp;
-    let timestamp2 = data2.data.timestamp;
-    let timestamp3 = data3.data.timestamp;
+    let timestamp1 = new Date().getTime() - data1.data.timestamp;
+    let timestamp2 = new Date().getTime() - data2.data.timestamp;
+    let timestamp3 = new Date().getTime() - data3.data.timestamp;
+    let timestamp = new Date().getTime();
 
     let averageTime =
       (timestamp1 + timestamp2 + timestamp3) / 3 + RTT1 + RTT2 + RTT3;
     await axios.post("http://dockernginxloadbalancer_api_1:3003/sendTime", {
-      timestamp: averageTime,
+      timestamp: timestamp + averageTime,
     });
     await axios.post("http://dockernginxloadbalancer_api_2:3003/sendTime", {
-      timestamp: averageTime,
+      timestamp: timestamp + averageTime,
     });
     await axios.post("http://dockernginxloadbalancer_api_3:3003/sendTime", {
-      timestamp: averageTime,
+      timestamp: timestamp + averageTime,
     });
     console.log("The average is: ", averageTime);
 
     res.json({
-      timestamp: averageTime,
+      delta: averageTime,
+      timestamp: timestamp + averageTime,
     });
   } catch (e) {
     console.log("The error in syncing time is: ", e);

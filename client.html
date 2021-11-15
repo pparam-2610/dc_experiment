@@ -4,12 +4,12 @@
   </head>
   <body>
     Timestamp:<span id="timeStamp">24242424</span> <br />
-    Request Time:<span id="reqTime">24242424</span>ms<br />
+    Request Time:<span id="reqTime">0</span>ms<br />
     <button onclick="syncTime()">Request</button>
     <script>
       let timestamp = document.getElementById("timeStamp");
       let reqTime = document.getElementById("reqTime");
-
+      timestamp.innerHTML = new Date().getTime();
       function syncTime() {
         console.time("timer1");
         // setInterval(() => {
